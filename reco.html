@@ -1,0 +1,347 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Tomviz: Alignment and Reconstruction</title>
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/simple.css">
+    <link rel="stylesheet" href="css/custom.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+    <link rel="shortcut icon" href="./images/favicon_tomviz.png" />
+  </head>
+  <body>
+    <div class="reveal">
+      <!-- ====================== BETWEEN REVEAL AND SLIDES ====================== -->
+      <header class="left" style="position: absolute; left: 10px;"></header>
+      <header class="right" style="position: absolute; right: 10px;"></header>
+      <!-- ====================== BETWEEN REVEAL AND SLIDES ====================== -->
+      <div class="slides">
+      
+        <section>
+          <a href="http://tomviz.org/" class="image">
+            <img height="80" src="./images/tomviz_logo.png" alt="Tomviz">
+          </a>
+          <h3>Alignment and Reconstruction</h3>
+          <h4>Frontiers of Electron Tomography, Berkeley Lab, CA</h4>
+          <h4>25 October, 2017</h4>
+          <h4>Marcus D. Hanwell</h4>
+          <a href="https://kitware.com/" class="image">
+            <img height="50" src="./images/kitware_logo.png" alt="Kitware">
+          </a><br />
+          <a href="https://www.electron-tomo.com/" class="image">
+            <img height="60" src="./images/fet_logo.png" alt="Frontiers of Electron Tomography">
+          </a>
+          <aside class="notes"><p>30 minutes for introduction, 1.5 hours for alignment and reconstruction, and 1.5 hours for visualization and data analysis</p></aside>
+        </section>
+<!-- ====================== SLIDE TO THE LEFT ======================
+<section data-state="headleft">
+<style>.headleft header.left:after { content: "headline"; }</style>
+ ====================== SLIDE TO THE LEFT ====================== -->
+<section  data-markdown><script type="text/template">
+
+### Outline
+
+* Introduction
+* Tilt series
+* Aligning data
+* Reconstructing data
+
+</script></section><section ><section data-markdown><script type="text/template">
+
+### Introduction
+
+* Saving your work
+ * Tomviz saves the pipeline every five minutes
+ * This can be recovered upon restart of Tomviz
+* You can also save the application state
+ * Snapshot of pipeline at a given moment
+ * Can be restored, edited, saved again
+* Note that saving state *does not* save data
+
+</script></section><section data-markdown><script type="text/template">
+
+### Data size
+
+| Volume           | Voxels        | Size (char) | Size (int) |
+| ---------------: | ------------: | --------:   | ---------: |
+|   64<sup>3</sup> |       262,144 |     0.25 MB |     1 MB   |
+|  128<sup>3</sup> |     2,097,152 |     2.00 MB |     8 MB   |
+|  256<sup>3</sup> |    16,777,216 |    16.00 MB |    64 MB   |
+|  512<sup>3</sup> |   134,217,728 |   128.00 MB |   512 MB   |
+| 1024<sup>3</sup> | 1,073,741,824 | 1,024.00 MB | 4,096 MB   |
+
+</script></section><section data-markdown><script type="text/template">
+### Saving state
+![Save state](./images/tomviz_save_state.png)
+
+</script></section><section data-markdown><script type="text/template">
+
+### Recovering state
+<img src="./images/tomviz_recover.png" height="550" alt="Recover state" />
+
+</script></section><section data-markdown><script type="text/template">
+
+### Loading state
+![Load state](./images/tomviz_load_state.png)
+
+</script></section><section data-markdown><script type="text/template">
+### Loading data
+![Open data](./images/tomviz_open_data.png)
+
+</script></section><section data-markdown><script type="text/template">
+### Saving data
+![Open data](./images/tomviz_save_data.png)
+
+</script></section></section><section ><section data-markdown><script type="text/template">
+### Tilt series
+
+* Application comes bundled with a sample tilt series
+ * It will automatically set the tilt angles
+ * Normally this must be done manually
+* Two major types of data that are loaded
+ * Defaults to being treated as a reconstruction
+ * Can be marked as a tilt series
+ 
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Loading sample tilt series
+<img src="./images/tomviz_load_tilt.png" height="550" alt="Open sample tilt series" />
+
+</script>
+
+</section><section data-markdown><script type="text/template">
+### Sample tilt series
+<img src="./images/tomviz_tilt_sample.png" height="550" alt="Sample tilt series" />
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Creating a tilt series
+<img src="./images/create_tilt_series.png" height="550" alt="Create tilt series" />
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Set by range
+<img src="./images/set_by_range.png" height="550" alt="Create tilt series by range" />
+
+</script></section><section data-markdown><script type="text/template">
+### Set individually
+<img src="./images/set_individually.png" height="550" alt="Create tilt series custom" />
+
+</script></section></section><section ><section data-markdown><script type="text/template">
+### Aligning data
+
+<img src="./images/tomography_menu.png" height="550" alt="Tomography menu" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Manual alignment
+
+* Some automated alignment algorithms are available
+* Manual alignment of images offer a number of tools
+ * Can be saved to a state file, and edited again
+* Toggling between images, or image differencing
+* Ideally use a fiducial marker to align
+* Can align to previous, next, or to a fixed reference
+* Keyboard shortcuts available to align, switch images
+* Zoom, brightness, contrast available to aid alignment
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Manual alignment
+<img src="./images/manual_align.png" height="550" alt="Manual align" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Alignment dialog
+<img src="./images/align_dialog.png" height="550" alt="Alignment dialog" />
+</aside></script></section>
+
+<section data-markdown><script type="text/template">
+### Manual alignment differencing
+<img src="./images/manual_align_diff.png" height="550" alt="Manual align difference" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Tilt axis alignment
+
+* Need to determine the tilt axis angle and position
+ * This is in addition to aligning the images
+* Dedicated dialog for menual determination
+ * Some algorithms avaialble to attempt fitting
+* Choose three slices to show a quick reconstruction
+ * Position one on a fiducial particle
+ * Position the other two on interesting features
+* Fiducial nanoparticles are ideally spherical
+ * Crescent shaped when in the wrong position
+* Color maps can be edited for each reconstruction
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Tilt axis alignment
+<img src="./images/tilt_axis_menu.png" height="550" alt="Tilt axis menu" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Tilt axis dialog
+<img src="./images/tilt_axis_dialog.png" height="550" alt="Tilt axis dialog" />
+
+</script></section><section data-markdown><script type="text/template">
+### Tilt axis dialog
+<img src="./images/tilt_axis_dialog2.png" height="550" alt="Tilt axis dialog" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Tilt axis dialog
+<img src="./images/tilt_axis_color.png" height="550" alt="Tilt axis dialog" />
+</script></section>
+
+</section>
+
+<section>
+
+<section  data-markdown><script type="text/template">
+### Reconstructing data
+
+* A number of reconstruction techniques available
+* This is the *most computationally intensive* step!
+* Save your work often, consider downsampling it
+* Some available algorithms include
+ * Simple back projection
+ * Direct Fourier
+ * Weighted back projection
+ * Many others, and it is easy to add more
+* Most in Python, can be used as starting points
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Pre-reconstruction pipeline
+* Typical pipeline before reconstruction
+* Some pre-processing, image and tilt axis alignment
+
+<img src="./images/reco_pre_pipeline.png" height="300" alt="Pipeline before reconstruction" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Reconstruction menu
+* Available reconstructions in the tomography menu
+* Most are developed in Python, one in C++
+
+<img src="./images/reco_menu.png" height="300" alt="Reconstruction menu" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Weighted back projection
+
+* Enter the parameters shown
+* Run the reconstruction
+
+<img src="./images/weighted_back_proj.png" height="300" alt="Weighted back projection" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Weighted back projection
+<img src="./images/weighted_back_proj2.png" height="550" alt="Weighted back projection" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Weighted back projection
+<img src="./images/weighted_back_proj3.png" height="550" alt="Weighted back projection" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Weighted back projection
+<img src="./images/weighted_back_proj4.png" height="550" alt="Weighted back projection" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Weighted back projection&mdash;code!
+<img src="./images/weighted_back_proj5.png" height="550" alt="Weighted back projection" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Save the reconstructed data
+
+* Shown as a child data set
+* Highlight it (by clicking on it)
+* Go to the file menu, and click save data
+
+<img src="./images/save_data.png" height="300" alt="Save data" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Advanced reconstruction techniques
+
+* All but one reconstruction algorithms&mdash;Python
+ * You can examine the code in the application
+ * You can even modify them and see the result
+* Tomviz offers ready-to-use algorithms
+ * It is also designed to enable others to add more
+ * Experiment locally, consider making pull requests
+* Modified operators are saved in the state file
+
+</script></section>
+
+</section>
+
+<section data-markdown><script type="text/template">
+### Summary
+
+* Gone from importing a tilt series
+* Looked at pre-processing, alignment
+* Reconstruction of the data
+* Saving pipelines and data
+
+</script></section>
+
+</div>
+
+<!-- ============================================ -->
+      </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+      // More info about config & dependencies:
+      // - https://github.com/hakimel/reveal.js#configuration
+      // - https://github.com/hakimel/reveal.js#dependencies
+      Reveal.initialize({
+        history: true,
+        center: true,
+        slideNumber: true,
+        math: {
+          mathjax: 'https://cdn.mathjax.org/mathjax/latest/MathJax.js',
+          config: 'TeX-AMS_HTML-full'  // See http://docs.mathjax.org/en/latest/config-files.html
+        },
+        dependencies: [
+          { src: 'plugin/markdown/marked.js' },
+          { src: 'plugin/markdown/markdown.js' },
+          { src: 'plugin/notes/notes.js', async: true },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'plugin/math/math.js', async: true }
+          ]
+        });
+    </script>
+  </body>
+</html>

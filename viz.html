@@ -1,0 +1,511 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Tomviz: Visualization and Analysis</title>
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/simple.css">
+    <link rel="stylesheet" href="css/custom.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+
+    <link rel="shortcut icon" href="./images/favicon_tomviz.png" />
+  </head>
+  <body>
+    <div class="reveal">
+      <!-- ====================== BETWEEN REVEAL AND SLIDES ====================== -->
+      <header class="left" style="position: absolute; left: 10px;"></header>
+      <header class="right" style="position: absolute; right: 10px;"></header>
+      <!-- ====================== BETWEEN REVEAL AND SLIDES ====================== -->
+      <div class="slides">
+      
+        <section>
+          <a href="http://tomviz.org/" class="image">
+            <img height="80" src="./images/tomviz_logo.png" alt="Tomviz">
+          </a>
+          <h3>Visualization and Analysis</h3>
+          <h4>Frontiers of Electron Tomography, Berkeley Lab, CA</h4>
+          <h4>25 October, 2017</h4>
+          <h4>Marcus D. Hanwell</h4>
+          <a href="https://kitware.com/" class="image">
+            <img height="50" src="./images/kitware_logo.png" alt="Kitware">
+          </a><br />
+          <a href="https://www.electron-tomo.com/" class="image">
+            <img height="60" src="./images/fet_logo.png" alt="Frontiers of Electron Tomography">
+          </a>
+          <aside class="notes"><p>30 minutes for introduction, 1.5 hours for alignment and reconstruction, and 1.5 hours for visualization and data analysis</p></aside>
+        </section>
+
+<!-- ====================== SLIDE TO THE LEFT ======================
+<section data-state="headleft">
+<style>.headleft header.left:after { content: "headline"; }</style>
+ ====================== SLIDE TO THE LEFT ====================== -->
+<section  data-markdown><script type="text/template">
+
+### Outline
+
+* Introduction
+* Visualization techniques
+* Volume rendering
+* Data transforms
+* Exporting data
+
+</script></section><section ><section data-markdown><script type="text/template">
+
+### Introduction
+
+* Saving your work
+ * Tomviz saves the pipeline every five minutes
+ * This can be recovered upon restart of Tomviz
+* You can also save the application state
+ * Snapshot of pipeline at a given moment
+ * Can be restored, edited, saved again
+* Note that saving state *does not* save data
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+
+### What are you visualizing?
+
+* The end of the processing pipeline
+ * With no operators this is the original data
+ * Normally it has had several operations applied
+* Some operators, e.g. reconstructions, are different
+ * Must select the data set, and add modules to that
+ * Data sets can also be cloned, creating a new root
+* Visualization modules see the end of pipelines
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Loading data
+![Open data](./images/tomviz_open_data.png)
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Recent files
+![Open data](./images/recent_files.png)
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Saving data
+![Open data](./images/tomviz_save_data.png)
+
+</script></section>
+
+</section>
+
+
+<section ><section data-markdown><script type="text/template">
+### Visualization techniques
+
+* We will go over available techniques
+ * Several important parameters will be explained
+* GPU accelerated&mdash;need a good graphics card
+ * Generally want around 1GB GPU memory
+ * More is needed for larger volumes
+* Volume rendering uploads volume to GPU!
+* Countour uploads triangles of surface
+* Destructive pipeline, but still need system RAM too
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+
+### Available visualization modules
+
+<img src="./images/viz_modules.png" height="69" alt="Visualization modules" />
+
+* Optimized visualization code
+ * Developed in C++ to take adantage of hardware
+ * Using graphics hardware acceleration, GLSL
+* Also available from the visualization menu
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+
+### Available visualization modules
+
+<img src="./images/viz_menu.png" height="300" alt="Visualization menu" />
+
+* Optimized visualization code
+ * Developed in C++ to take adantage of hardware
+ * Using graphics hardware acceleration, GLSL
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Default view of loaded data
+<img src="./images/default_view.png" height="550" alt="Open sample tilt series" />
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Default view of loaded data
+
+* When loading any data set several things happen
+* Default color map is used&mdash;plasma 17
+* Histogram is calculated in background thread
+ * Displayed when ready in the top-right
+* Default pipeline is constructed with two modules
+ * Outline to show the extent of the data
+ * Orthogonal slice through the center of the data
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+
+### Palette and background colors
+
+<img src="./images/palette.png" height="200" alt="Visualization menu" />
+
+* Easily modify the palette with several presets
+ * Possible to modify the default when preferred
+* Black preferred in some situations on monitors
+* White for print, web pages, etc to highlight sample
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Color maps
+<img src="./images/colormaps.png" height="550" alt="Color maps" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Color maps&mdash;bottom bar
+<img src="./images/colormap2.png" height="550" alt="Color maps" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Contour
+<img src="./images/contour.png" height="550" alt="Contour" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Contour&mdash;specular
+<img src="./images/contour_specular.png" height="550" alt="Contour specular" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Contour&mdash;values
+<img src="./images/contour2.png" height="550" alt="Contour" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Contour&mdash;values
+<img src="./images/contour3.png" height="550" alt="Contour" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Orthogonal slice
+<img src="./images/orthogonal_slice.png" height="550" alt="Orthogonal slice" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Slice&mdash;arbitrary
+<img src="./images/slice.png" height="550" alt="Slice" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Outline&mdash;grid and axes
+<img src="./images/outline.png" height="550" alt="Outline" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Ruler&mdash;making measurements
+<img src="./images/ruler.png" height="550" alt="Outline" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Threshold
+<img src="./images/threshold.png" height="550" alt="Threshold" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Threshold
+<img src="./images/threshold2.png" height="550" alt="Threshold" />
+</script></section>
+
+</section>
+
+<section>
+
+<section data-markdown><script type="text/template">
+### Volume rendering
+
+* Powerful technique that traces paths of rays
+* Requires GPU memory to upload volume to card
+* Many different options available
+ * Change the color map
+ * Modify the opacity trasnfer function
+ * Different transfer modes, interpolation, blending, lighting, jittering, etc
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Volume rendering&mdash;default
+<img src="./images/volume_render.png" height="550" alt="Volume render default" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Volume rendering&mdash;opacity
+<img src="./images/volume_render2.png" height="550" alt="Volume render opacity" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Volume rendering&mdash;black background
+<img src="./images/volume_render_black.png" height="550" alt="Volume render black" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Volume rendering&mdash;white background
+<img src="./images/volume_render_white.png" height="550" alt="Volume render white" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Volume rendering&mdash;empty space
+<img src="./images/volume_render_outline.png" height="550" alt="Volume render outline" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Volume rendering&mdash;cropping
+<img src="./images/volume_render_crop_menu.png" height="550" alt="Volume render crop" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Volume rendering&mdash;cropping
+<img src="./images/volume_render_crop1.png" height="550" alt="Volume render crop" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Volume rendering&mdash;cropping
+<img src="./images/volume_render_crop2.png" height="550" alt="Volume render crop" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Volume rendering&mdash;cropping
+<img src="./images/volume_render_crop3.png" height="550" alt="Volume render crop" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Volume rendering&mdash;properties
+<img src="./images/volume_props.png" height="350" alt="Volume render properties" />
+
+* Many volume rendering propoerties
+ * Affect rendering in different ways
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Volume rendering&mdash;default
+<img src="./images/volume_default.png" height="550" alt="Volume render default" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Volume rendering&mdash;no jittering
+<img src="./images/volume_no_jitter.png" height="550" alt="Volume render no jitter" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Volume rendering&mdash;lighting
+<img src="./images/volume_lighting.png" height="550" alt="Volume render lighting" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Volume rendering&mdash;max intensity
+<img src="./images/volume_max.png" height="550" alt="Volume render max intensity" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Volume rendering&mdash;1D transfer
+<img src="./images/volume_1d_transfer.png" height="350" alt="Volume render 1D transfer" />
+
+* Use of the 1D transfer function highlights gradients
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Volume rendering&mdash;2D transfer
+<img src="./images/volume_2d_transfer.png" height="350" alt="Volume render 2D transfer" />
+
+* Use of the 2D transfer function highlights gradients
+ * More selectivity for some data
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Volume rendering&mdash;2D transfer
+<img src="./images/volume_2d_transfer2.png" height="350" alt="Volume render 2D transfer" />
+
+* Use of the 2D transfer function highlights gradients
+ * Select a box in the 2D histogram
+
+</script></section>
+
+</section>
+
+<section>
+
+<section data-markdown><script type="text/template">
+### Data transforms
+
+* Data transforms can be applied to your data
+ * Implemented as operators in C++ or Python
+* Operate in place on the data
+* Some have graphical interfaces
+* Can edit the source code from the context menu
+* The operators execute in a background thread
+ * Application remains interactive
+ * Can edit the pipeline while they run
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Data transforms
+<img src="./images/data_transform_menu.png" height="550" alt="Data transform menu" />
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+
+### Data transforms
+
+* Most are quite self-explanatory
+ * Already showed the crop operator
+* They make extensive use of NumPy
+* Custom transform shows source code immediately
+ * Operate on a NumPy array, return new data
+
+</script></section>
+
+</section>
+
+<section>
+
+<section data-markdown><script type="text/template">
+
+### Exporting data
+
+* When you are happy with your data&mdash;export!
+ * Data to standard formats
+ * Screenshot of the render view
+ * Animations of the render view
+ * An interactive scene for web browsers
+ * Geometry for 3D printing
+ * Images of slices
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Export
+<img src="./images/save_data.png" height="450" alt="Save menu" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Data formats
+<img src="./images/save_data_formats.png" height="550" alt="Data formats" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Data formats
+
+* Recommend EMD (HDF5 based) for saving data
+ * Supports saving units in all three dimensions
+ * Supports all types used in Tomviz
+ * Open, specified, but not as widely supported
+* TIFF is often the most diverse to export to
+ * Only supports limited types
+ * Limited support for units/dimensions
+ * Open, wide support in many packages
+* Others may be of use in special circumstances
+
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Export screenshot
+<img src="./images/export_screenshot.png" height="300" alt="Screenshot" />
+
+* Can specify size, supports a number of image formats
+* Can override palette, use transparent backgrounds
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Export movie
+<img src="./images/save_movie.png" height="300" alt="Movie" />
+
+* Defaults to an orbit of the data
+* Set the resolution, save defaults before generating
+* Supports common movie formats
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Export to the web
+<img src="./images/export_web.png" height="450" alt="Web" />
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Export to the web
+
+* Image based default to generate images
+ * No need for WebGL in the browser
+ * Limited angles, etc
+* Geometry based where actual data is exported
+ * Often needs to be downsampled for browsers
+ * Better interactivity
+* Generate data for viewer option
+ * Used to integrate exported into larger web pages
+ * Defaults to single HTML page with data
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Export to the web
+<img src="./images/export_web_eg.png" height="550" alt="Web" />
+</script></section>
+
+</section></div>
+
+<!-- ============================================ -->
+      </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+      // More info about config & dependencies:
+      // - https://github.com/hakimel/reveal.js#configuration
+      // - https://github.com/hakimel/reveal.js#dependencies
+      Reveal.initialize({
+        history: true,
+        center: true,
+        slideNumber: true,
+        math: {
+          mathjax: 'https://cdn.mathjax.org/mathjax/latest/MathJax.js',
+          config: 'TeX-AMS_HTML-full'  // See http://docs.mathjax.org/en/latest/config-files.html
+        },
+        dependencies: [
+          { src: 'plugin/markdown/marked.js' },
+          { src: 'plugin/markdown/markdown.js' },
+          { src: 'plugin/notes/notes.js', async: true },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'plugin/math/math.js', async: true }
+          ]
+        });
+    </script>
+  </body>
+</html>
