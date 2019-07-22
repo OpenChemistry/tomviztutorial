@@ -66,7 +66,7 @@
             <ul>
               <li>Align the images</li>
               <li>Reconstruct the 3D volume</li>
-              <li>Uses Python, NumPy, SciPy for many functions</li>
+              <li>Uses Python, NumPy, SciPy</li>
               <li>Record workflow in JSON state file</li>
             </ul>
           </ul>
@@ -85,8 +85,8 @@
             </ul>
             <li>Develop a user-friendly, open source tool</li>
             <ul>
-              <li>Desktop application aimed at experimentalists</li>
-              <li>Offering an environment that can be extended</li>
+              <li>Desktop application for experimentalists</li>
+              <li>An environment that can be extended</li>
               <li>Primarily developed in C++</li>
               <li>Python/Python wrapped C++ code</li>
             </ul>
@@ -95,7 +95,7 @@
         <section>
           <h3>Goals</h3>
           <ul>
-            <li>Provide a single software application for workflows</li>
+            <li>Single tool for integrated workflows</li>
             <li>Make materials tomography reproducible</li>
             <ul>
               <li>Research into new reconstruction techniques</li>
@@ -196,12 +196,12 @@
             <li>Input 3D array from previous pipeline step</li>
             <li>API to update user interface on progress</li>
             <li>Provide an interactive editor for operators</li>
-            <li>Translation to/from application painless using views</li>
+            <li>Translation to/from application painless (views)</li>
             <ul>
-              <li>Fortran ordering of image data has been painful</li>
+              <li>Fortran ordering of image data is an issue</li>
             </ul>
             <li>Set output arrays, including tables, messages</li>
-            <li>Background thread, seamless to operator developer</li>
+            <li>Background thread, seamless to developer</li>
           </ul>
         </section>
         <section>
@@ -264,7 +264,7 @@
         </section>
         <section>
           <h3>Electron Microscopy Datasets (EMD)</h3>
-          <img width="42%" src="./images/emd-structure.png" alt="EMD structure" style="float: right">
+          <img width="40%" src="./images/emd-structure.png" alt="EMD structure" style="float: right">
           <ul style="float: left; width:50%">
             <li>Developed at NCEM</li>
             <li>Added to Tomviz</li>
@@ -274,7 +274,7 @@
             <li>Standardizing on units</li>
             <li>Examining LiberTEM</li>
             <ul>
-              <li>Based on NeXus for TEM</li>
+              <li>Based on NeXus</li>
             </ul>
           </ul>
         </section>
@@ -311,13 +311,13 @@
           <ul>
             <li>Load in raw data, align, reconstruct, visualize</li>
             <li>Relocatable state files&mdash;share full pipeline</li>
-            <li>Background execution of operators (Python &amp; C++)</li>
+            <li>Operators execute in background (Python &amp; C++)</li>
             <li>Python-native pipeline using ITK, VTK, SciPy, etc</li>
             <li>Advanced volume rendering, flying edges</li>
             <li>Early adopter of OpenGL 2, Qt 5, C++11, Python 3</li>
             <li>Focused, intuitive interface for tomography</li>
-            <li>Self-contained installer for Windows, macOS, Linux</li>
-            <li>Automated generation of installers for all platforms</li>
+            <li>Self-contained installer&mdash;Windows, macOS, Linux</li>
+            <li>Automated generation of installers</li>
             <li>Export images, movies, <a href="https://openchemistry.github.io/tomvizweb/" target="_blank">interactive HTML5</a></li>
           </ul>
         </section>
@@ -331,11 +331,11 @@
             <li>Destructive pipeline minimizes memory use</li>
             <ul>
               <li>Rerun entire pipeline when anything changes</li>
-              <li>Executes in a background thread&mdash;interactivity</li>
+              <li>Uses a background thread&mdash;interactivity</li>
             </ul>
             <li>Optimized contouring for sparse data</li>
             <ul>
-              <li>Early termination offering interactive contours</li>
+              <li>Early termination for interactive contours</li>
             </ul>
             <li>Combined histogram-opacity-color map</li>
             <li>Single application for all steps of tomography</li>
@@ -385,7 +385,7 @@
             <ul>
               <li><a href="https://github.com/OpenChemistry/tomviz/blob/master/README.md">README.md</a>&mdash;brief guide to the project</li>
               <li><a href="https://github.com/OpenChemistry/tomviz/blob/master/BUILDING.md">BUILDING.md</a>&mdash;how to build the project</li>
-              <li><a href="https://github.com/OpenChemistry/tomviz/blob/master/STYLE.md">STYLE.md</a>&mdash;coding style guidelines (clang-format)</li>
+              <li><a href="https://github.com/OpenChemistry/tomviz/blob/master/STYLE.md">STYLE.md</a>&mdash;coding style (clang-format)</li>
             </ul>
             <li><a href="https://github.com/openchemistry/tomviz-superbuild">Superbuild</a> used for builds</li>
             <ul>
@@ -423,11 +423,11 @@
             <ul>
               <li>Build and package Python, SciPy, NumPy, Qt, TBB, FFMPEG, HDF5 VTK, ParaView, ITK</li>
               <li>Python wrapped C++ interfaces to libraries</li>
-              <li>Offer a downloadable application with full stack</li>
+              <li>Downloadable application with full stack</li>
             </ul>
             <li>Use of CMake "superbuild" to coordinate build</li>
             <ul>
-              <li>Dependencies built first for all three platforms</li>
+              <li>Dependencies built for all three platforms</li>
               <li>Binary package created using CPack</li>
               <li>Automatically uploaded when master changes</li>
             </ul>
@@ -474,7 +474,7 @@
              * Live updates of long-running reconstructions
              * Love "growing" as data is acquired on TEM
             * Working on multi-modal/multi-channel
-             * Build awareness of more than one data channel
+             * Awareness of more than one data channel
              * Hoping to load channels lazily on demand
           </textarea>
         </section>
@@ -511,7 +511,7 @@
       <section>
         <section>
           <h3>Closing Thoughts</h3>
-          <p>We have a fantastic team of developers and collaborators: David Muller, Robert Hovden, Peter Ercius, Yi Jiang, Elliot Padgett, Barnaby Levin, Colin Ophus, Shawn Waldon, Chris Harris, Cory Quammen, Robert Maynard, Utkarsh Ayachit, Sebastien Jourdain, Matt McCormick, Alvaro Sanchez, TJ Corona, Berk Geveci, Martin Turner, Dula Parkinson, ...</p>
+          <p>We have a fantastic team of developers and collaborators including: David Muller, Robert Hovden, Chris Harris, Alessandro Genova, Brianna Major, Peter Ercius, Yi Jiang, Jonathan Schwartz, Elliot Padgett, Barnaby Levin, Colin Ophus, Shawn Waldon, Cory Quammen, Robert Maynard, Utkarsh Ayachit, Sebastien Jourdain, Matt McCormick, Alvaro Sanchez, TJ Corona, Berk Geveci, Martin Turner, Dula Parkinson, ...</p>
           <p>Also funding from the Department of Energy, Office of Science under contract DE-SC0011385</p>
         </section>
         <section>
