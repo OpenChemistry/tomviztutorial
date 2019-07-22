@@ -147,13 +147,13 @@
 ### Visualization techniques
 
 * We will go over available techniques
- * Several important parameters will be explained
+ * Important parameters will be explained
 * GPU accelerated&mdash;need a good graphics card
  * Generally want around 1GB GPU memory
  * More is needed for larger volumes
 * Volume rendering uploads volume to GPU!
 * Contour uploads triangles of surface
-* Destructive pipeline, but still need system RAM too
+* Destructive pipeline&mdash;still need system RAM
 
 </script></section>
 
@@ -164,7 +164,7 @@
 <img src="./images/viz_modules.png" height="69" alt="Visualization modules" />
 
 * Optimized visualization code
- * Developed in C++ to take advantage of hardware
+ * C++ to take advantage of hardware
  * Using graphics hardware acceleration, GLSL
 * Also available from the visualization menu
 
@@ -177,27 +177,27 @@
 <img src="./images/viz_menu.png" height="300" alt="Visualization menu" />
 
 * Optimized visualization code
- * Developed in C++ to take advantage of hardware
+ * C++ to take advantage of hardware
  * Using graphics hardware acceleration, GLSL
 
 </script></section>
 
 <section data-markdown><script type="text/template">
 ### Default view of loaded data
-<img src="./images/default_view.png" height="550" alt="Open sample tilt series" />
+<img src="./images/default_view.png" height="550" alt="Default view of the data" />
 
 </script></section>
 
 <section data-markdown><script type="text/template">
 ### Default view of loaded data
 
-* When loading any data set several things happen
+* When loading any dataset several things happen
 * Default color map is used&mdash;plasma
 * Histogram is calculated in background thread
  * Displayed when ready in the top-right
 * Default pipeline is constructed with two modules
  * Outline to show the extent of the data
- * Orthogonal slice through the center of the data
+ * A slice through the center of the data
 
 </script></section>
 
@@ -367,7 +367,7 @@
 ### Volume rendering&mdash;1D transfer
 <img src="./images/volume_1d_transfer.png" height="350" alt="Volume render 1D transfer" />
 
-* Use of the 1D transfer function highlights gradients
+* 1D transfer function highlights gradients
 
 </script></section>
 
@@ -375,7 +375,7 @@
 ### Volume rendering&mdash;2D transfer
 <img src="./images/volume_2d_transfer.png" height="350" alt="Volume render 2D transfer" />
 
-* Use of the 2D transfer function highlights gradients
+* 2D transfer function highlights gradients
  * More selectivity for some data
 
 </script></section>
@@ -384,7 +384,7 @@
 ### Volume rendering&mdash;2D transfer
 <img src="./images/volume_2d_transfer2.png" height="350" alt="Volume render 2D transfer" />
 
-* Use of the 2D transfer function highlights gradients
+* 2D transfer function highlights gradients
  * Select a box in the 2D histogram
 
 </script></section>
@@ -461,7 +461,7 @@
 
 <section data-markdown><script type="text/template">
 ### Export
-<img src="./images/save_data.png" height="450" alt="Save menu" />
+<img src="./images/tomviz_save_data.png" height="450" alt="Save menu" />
 </script></section>
 
 <section data-markdown><script type="text/template">
@@ -488,8 +488,8 @@
 ### Export screenshot
 <img src="./images/export_screenshot.png" height="300" alt="Screenshot" />
 
-* Can specify size, supports a number of image formats
-* Can override palette, use transparent backgrounds
+* Specify size, supports a number of image formats
+* Override palette, use transparent backgrounds
 </script></section>
 
 <section data-markdown><script type="text/template">
@@ -516,7 +516,7 @@
  * Often needs to be downsampled for browsers
  * Better interactivity
 * Generate data for viewer option
- * Used to integrate exported into larger web pages
+ * Integrate exported in larger web site
  * Defaults to single HTML page with data
 </script></section>
 
