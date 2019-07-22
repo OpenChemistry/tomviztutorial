@@ -36,14 +36,11 @@
             <img height="80" src="./images/tomviz_logo.png" alt="Tomviz">
           </a>
           <h3>Introduction</h3>
-          <h4>Frontiers of Electron Tomography, Berkeley Lab, CA</h4>
-          <h4>25 October, 2017</h4>
+          <h4>Kitware Course Week, Clifton Park, NY</h4>
+          <h4>24 July, 2019</h4>
           <h4>Marcus D. Hanwell</h4>
           <a href="https://kitware.com/" class="image">
-            <img height="50" src="./images/kitware_logo.png" alt="Kitware">
-          </a><br />
-          <a href="https://www.electron-tomo.com/" class="image">
-            <img height="60" src="./images/fet_logo.png" alt="Frontiers of Electron Tomography">
+            <img height="75" src="./images/kitware_logo.png" alt="Kitware">
           </a>
         </section>
 <!-- ====================== SLIDE TO THE LEFT ======================
@@ -70,7 +67,7 @@
               <li>Align the images</li>
               <li>Reconstruct the 3D volume</li>
               <li>Uses Python, NumPy, SciPy for many functions</li>
-              <li>Record workflow in XML state file</li>
+              <li>Record workflow in JSON state file</li>
             </ul>
           </ul>
         </section>
@@ -189,6 +186,10 @@
           <img height="500" src="./images/tomviz_python_operator.png" alt="Tomviz Python operator" style="center">
         </section>
         <section>
+          <h3>Operator Data Flow</h3>
+          <img height="400" src="./images/tomviz-data-flow.png" alt="Tomviz data flow" style="center">
+        </section>
+        <section>
           <h3>Make It Easy to Add Algorithms</h3>
           <ul>
             <li>Develop natural Python code using NumPy</li>
@@ -198,7 +199,6 @@
             <li>Translation to/from application painless using views</li>
             <ul>
               <li>Fortran ordering of image data has been painful</li>
-              <li>Looking at using geometric transform</li>
             </ul>
             <li>Set output arrays, including tables, messages</li>
             <li>Background thread, seamless to operator developer</li>
@@ -211,7 +211,7 @@
             <li>Document the path from raw data to final images</li>
             <li>XML format developed for reproducibility</li>
             <ul>
-              <li>Entire pipeline saved to the XML file</li>
+              <li>Entire pipeline saved to the <s>XML</s> JSON file</li>
               <li>Relative file paths to enable sharing</li>
               <li>Custom Python code embedded in state file</li>
             </ul>
@@ -219,6 +219,62 @@
             <li>Operators run in a background thread</li>
             <ul>
               <li>Remain interactive as operations are applied</li>
+            </ul>
+          </ul>
+        </section>
+        <section>
+          <h3>Fragments of JSON State File</h3>
+<pre><code class="json" data-trim data-noescape>
+"reader": {
+  "fileNames": ["../Recon_NP_doi_10.1021-nl103400a.tif"],
+  "name": "TIFFSeriesReader"
+}
+</code></pre>
+<pre><code class="json" data-trim data-noescape>
+            "camera": {
+                "eyeAngle": 2,
+                "focalPoint": [ 49.5, 107.5, 130.0 ],
+                "parallelScale": 175.8,
+                "position": [ -332.0, 90.8, 96.3
+                ],
+                "viewAngle": 30,
+                "viewUp": [ -0.034, 0.994, -0.1005 ]
+            }
+</code></pre>
+        </section>
+        <section>
+          <h3>Fragments of JSON State File</h3>
+<pre><code class="json" data-trim data-noescape>
+                {
+                    "type": "Volume",
+                    "properties": {
+                        "blendingMode": 1, "interpolation": 1,
+                        "lighting": {
+                            "ambient": 0, "diffuse": 1,
+                            "enabled": false, "specular": 1,
+                            "specularPower": 100
+                        },
+                        "rayJittering": true, "transferMode": 0,
+                        "visibility": true
+                    },
+                    "useDetachedColorMap": false,
+                    "viewId": 2200
+                }
+	</code></pre>
+        </section>
+        <section>
+          <h3>Electron Microscopy Datasets (EMD)</h3>
+          <img width="42%" src="./images/emd-structure.png" alt="EMD structure" style="float: right">
+          <ul style="float: left; width:50%">
+            <li>Developed at NCEM</li>
+            <li>Added to Tomviz</li>
+            <li>Flexible HDF-based format</li>
+            <li>Extensible format</li>
+            <li>Receptive to updates</li>
+            <li>Standardizing on units</li>
+            <li>Examining LiberTEM</li>
+            <ul>
+              <li>Based on NeXus for TEM</li>
             </ul>
           </ul>
         </section>
@@ -398,26 +454,58 @@
         </section>
       </section>
       <section>
+        <section data-markdown>
+          <textarea data-template>
+            ## Performance Improvements
+
+            * OpenGL rendering rewritten&mdash;OpenGL 3.2+
+            * In many cases now GPU bound
+             * Previously large geometries were CPU bound
+            * Large polygonal models >100x faster!
+            * Reduced memory footprint significantly tool
+            * Initial render times reduced
+          </textarea>
+        </section>
+        <section data-markdown>
+          <textarea data-template>
+            ## Highlights of New Features
+
+            * Pipeline rewritten to support more
+             * Live updates of long-running reconstructions
+             * Love "growing" as data is acquired on TEM
+            * Working on multi-modal/multi-channel
+             * Build awareness of more than one data channel
+             * Hoping to load channels lazily on demand
+          </textarea>
+        </section>
         <section>
-          <h3>Where Next?</h3>
-          <ul>
-            <li>Tomviz received DOE Phase IIB funding!</li>
-            <ul>
-              <li>Partnering with Michigan University</li>
-            </ul>
-            <li>Expand Tomviz to other types of tomography</li>
-            <li>Add support for multidimensional volume data</li>
-            <li>Data acquisition, real-time reconstruction</li>
-            <li>Richer state file using JSON for enhanced sharing</li>
-            <ul>
-              <li>Optionally wrapped in HDF5 with all data</li>
-            </ul>
-            <li>Advanced pipeline with significant advances</li>
-            <ul>
-              <li>Run operators in a separate process</li>
-              <li>Optionally run operators in cloud/HPC</li>
-            </ul>
-          </ul>
+          <h2>Live Pipeline</h2>
+          <img height="500" src="./images/tomviz-recol.gif" alt="Tomviz live acquisition" style="center">
+        </section>
+        <section data-markdown>
+          <textarea data-template>
+            ## Highlights of New Features
+
+            * Run the operator pipeline in a Docker container
+             * Serialized to JSON, HDF5 input/output
+             * Largely unchanged Python operators
+            * Image stack dialog for easier stack loading
+             * Supports various numbering schemes
+             * Extract angles encoded in file names
+          </textarea>
+        </section>
+        <section data-markdown>
+          <textarea data-template>
+            ## Highlights of New Features
+
+            * Acquisition client-server approach
+             * Windows XP, 32 bit locked down machine...
+             * Python, Bottle, simple API to work with TEM
+            * Remote execution of pipeline operations
+             * Can already run in batch
+             * Looking at best way to run remote
+            * Atoms!
+          </textarea>
         </section>
       </section>
       <section>
