@@ -1,0 +1,342 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Tomviz: Alignment and Reconstruction</title>
+
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/simple.css">
+    <link rel="stylesheet" href="css/custom.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    </script>
+    <link rel="shortcut icon" href="./images/favicon_tomviz.png" />
+  </head>
+  <body>
+    <div class="reveal">
+      <!-- ====================== BETWEEN REVEAL AND SLIDES ====================== -->
+      <header class="left" style="position: absolute; left: 10px;"></header>
+      <header class="right" style="position: absolute; right: 10px;"></header>
+      <!-- ====================== BETWEEN REVEAL AND SLIDES ====================== -->
+      <div class="slides">
+      
+        <section>
+          <a href="http://tomviz.org/" class="image">
+            <img height="80" src="./images/tomviz_logo.png" alt="Tomviz">
+          </a>
+          <h3>Advanced</h3>
+          <h4>Kitware Course Week, Clifton Park, NY</h4>
+          <h4>24 July, 2019</h4>
+          <h4>Marcus D. Hanwell</h4>
+          <a href="https://kitware.com/" class="image">
+            <img height="75" src="./images/kitware_logo.png" alt="Kitware">
+          </a>
+        </section>
+<!-- ====================== SLIDE TO THE LEFT ======================
+<section data-state="headleft">
+<style>.headleft header.left:after { content: "headline"; }</style>
+ ====================== SLIDE TO THE LEFT ====================== -->
+<section  data-markdown><script type="text/template">
+
+### Outline
+
+* Introduction
+* Custom Operators
+* User Input for Operators
+* External Pipelines
+* More
+
+</script></section><section ><section data-markdown><script type="text/template">
+
+### Introduction
+
+* Tomviz can be extended at runtime
+ * Custom operators and file formats
+ * Primarily using Python scripts/JSON
+* The processing pipeline is self-contained
+ * Run in Docker for reproducibility
+ * Soon external Python for CUDA, etc
+
+</script></section>
+
+</section>
+
+<section >
+  
+<section data-markdown><script type="text/template">
+### Custom Operators
+
+* Initially just a single entry
+ * Import custom transform
+* Use import, or copy files over
+ * Looks in ~/tomviz and ~/.tomviz
+ * Adds suitable Python/JSON files
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Custom Transforms
+![Custom Transforms](./images/custom_transforms.png)
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Custom Transforms&mdash;Test
+![Custom Transforms](./images/custom_transforms_test.png)
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Custom Transforms&mdash;Test
+![Custom Transforms](./images/custom_transforms_applied.png)
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Anatomy of an Operator
+<pre><code class="python" data-trim data-noescape>
+def transform_scalars(dataset):
+
+  from tomviz import utils
+  import numpy as np
+    
+  # Get the current volume as a NumPy array.
+  array = utils.get_array(dataset)
+    
+  # Operate on your data, here we square root it.
+  result = np.sqrt(array)
+    
+  # Set the transformed data, displayed in Tomviz.
+  utils.set_array(dataset, result)    
+</code></pre>
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Classier Operators&mdash;Outline
+<pre><code class="python" data-trim data-noescape>
+import tomviz.operators
+
+class SquareRootOperator(tomviz.operators.CancelableOperator):
+
+  def transform_scalars(self, dataset):
+    from tomviz import utils
+    import numpy as np
+    self.progress.maximum = 10
+    scalars = utils.get_scalars(dataset)
+    # Process dataset in chunks, user can cancel.
+    result = np.float32(scalars)
+    step = 0
+    # Processing loop goes here...
+    utils.set_scalars(dataset, result)
+</code></pre>
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Classier Operators&mdash;Loop
+<pre><code class="python" data-trim data-noescape>
+  def transform_scalars(self, dataset):
+    # ...other stuff from previous slide
+    scalars = utils.get_scalars(dataset)
+    # Process dataset in chunks, user can cancel.
+    result = np.float32(scalars)
+    for chunk in np.array_split(result, 10):
+      if self.canceled:
+        return
+      np.sqrt(chunk, chunk)
+      step += 1
+      self.progress.value = step
+
+    utils.set_scalars(dataset, result)
+</code></pre>
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Classier Operators&mdash;Complete
+<pre><code class="python" data-trim data-noescape>
+import tomviz.operators
+CHUNKS = 10
+
+class SquareRootOperator(tomviz.operators.CancelableOperator):
+  
+  def transform_scalars(self, dataset):
+    from tomviz import utils
+    import numpy as np
+    self.progress.maximum = CHUNKS
+    scalars = utils.get_scalars(dataset)
+    # Process dataset in chunks, user can cancel.
+    result = np.float32(scalars)
+    step = 0
+    for chunk in np.array_split(result, CHUNKS):
+      if self.canceled:
+        return
+      np.sqrt(chunk, chunk)
+      step += 1
+      self.progress.value = step
+    utils.set_scalars(dataset, result)
+</code></pre>
+</script></section>
+
+</section><section ><section data-markdown><script type="text/template">
+### User Input for Operators
+  
+* You have a custom operator now
+ * How can we change the chunk size?
+ * Edit the code? 
+* Generating user interface
+ * Inject input into operators
+</script></section>
+
+<section data-markdown><script type="text/template">
+### JSON for Increased Control
+<pre><code class="json" data-trim data-noescape>
+{
+  "name": "Fancy Square Root",
+  "label": "Classy Square Root",
+  "description": "This is the fanciest square root operator, it does it all...",
+  "parameters": [
+    {
+      "name": "number_of_chunks",
+      "label": "Number of Chunks",
+      "type": "int",
+      "default": 10,
+      "minimum": 1,
+      "maximum": 1000
+    }
+  ]
+}
+</code></pre>
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Classier Operators&mdash;Complete
+<pre><code class="python" data-trim data-noescape>
+import tomviz.operators
+  
+class SquareRootOperator(tomviz.operators.CancelableOperator):
+    
+  def transform_scalars(self, dataset, number_of_chunks = 10):
+    from tomviz import utils
+    import numpy as np
+    self.progress.maximum = number_of_chunks
+    scalars = utils.get_scalars(dataset)
+    # Process dataset in chunks, user can cancel.
+    result = np.float32(scalars)
+    step = 0
+    for chunk in np.array_split(result, number_of_chunks):
+      if self.canceled:
+        return
+      np.sqrt(chunk, chunk)
+      step += 1
+      self.progress.value = step
+    utils.set_scalars(dataset, result)
+</code></pre>
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Custom Transforms&mdash;JSON Menu
+![Custom Transforms](./images/custom_transforms_fancier.png)
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Custom Transforms&mdash;User Input
+![Custom Transforms](./images/custom_transforms_fancier2.png)
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Custom Transforms&mdash;Result
+![Custom Transforms](./images/custom_transforms_fancier3.png)
+</script></section>
+
+</section>
+
+<section>
+<section data-markdown><script type="text/template">
+### External Pipelines
+  
+* Tomviz usually runs pipelines in a background thread
+ * This can be changed in Pipeline Settings
+ * Threaded (default) or Docker
+* Working on making this more flexible in the future
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Pipeline Settings
+  ![Pipeline settings](./images/pipeline_settings.png)
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Pipeline Settings&mdash;Docker
+![Pipeline settings](./images/pipeline_settings_docker.png)
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Pulling Docker Image
+![Pipeline settings](./images/pulling_docker.png)
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Running Pipelines
+    
+* Use Tomviz to build a pipeline
+ * Save the state file (JSON)
+* Create a virtual environment, install
+ * cd tomviz/tomviz/python
+ * mkvirtualenv tomviz
+ * pip install -e .
+* Run pipelines
+ * tomviz-pipeline -s state.tvsm -d data.emd -o output.emd
+</script></section>
+
+</section>
+
+<section data-markdown><script type="text/template">
+### Summary
+
+* Adding custom operators is easy
+ * Options to customize input, etc
+* The pipeline can be run externally
+
+</script></section>
+
+</div>
+
+<!-- ============================================ -->
+      </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+      // More info about config & dependencies:
+      // - https://github.com/hakimel/reveal.js#configuration
+      // - https://github.com/hakimel/reveal.js#dependencies
+      Reveal.initialize({
+        history: true,
+        center: true,
+        slideNumber: true,
+        width: 1000,
+        height: 700,
+        margin: 0.1,
+        math: {
+          mathjax: 'https://cdn.mathjax.org/mathjax/latest/MathJax.js',
+          config: 'TeX-AMS_HTML-full'  // See http://docs.mathjax.org/en/latest/config-files.html
+        },
+        dependencies: [
+          { src: 'plugin/markdown/marked.js' },
+          { src: 'plugin/markdown/markdown.js' },
+          { src: 'plugin/notes/notes.js', async: true },
+          { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+          { src: 'plugin/math/math.js', async: true }
+          ]
+        });
+    </script>
+  </body>
+</html>
