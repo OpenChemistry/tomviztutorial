@@ -283,15 +283,30 @@ class SquareRootOperator(tomviz.operators.CancelableOperator):
 
 <section data-markdown><script type="text/template">
 ### Running Pipelines
-    
+
+* Create a virtual environment, install
+<pre><code class="shell" data-trim data-noescape>
+  $ git clone --recursive git://github.com/openchemistry/tomviz
+  $ cd tomviz/tomviz/python
+  $ mkvirtualenv tomviz
+  $ pip install -e .
+</code></pre>
 * Use Tomviz to build a pipeline
  * Save the state file (JSON)
-* Create a virtual environment, install
- * cd tomviz/tomviz/python
- * mkvirtualenv tomviz
- * pip install -e .
-* Run pipelines
- * tomviz-pipeline -s state.tvsm -d data.emd -o output.emd
+</script></section>
+
+<section data-markdown><script type="text/template">
+### Running Pipelines
+
+* Run the pipeline in the virtual environment
+<pre><code class="shell" data-trim data-noescape>
+  $ tomviz-pipeline -s state.tvsm -d data.emd -o output.emd
+  [2019-07-23 14:14:59,647] INFO: Executing 'Invert Data' operator
+  [2019-07-23 14:14:59,963] INFO: Writing transformed data. 
+</code></pre>
+* Input must be an EMD file right now
+* Operators are executed in sequence
+* Output is written to an EMD file
 </script></section>
 
 </section>
@@ -300,8 +315,13 @@ class SquareRootOperator(tomviz.operators.CancelableOperator):
 ### Summary
 
 * Adding custom operators is easy
+ * NumPy centric approach
+ * Runs in a background thread
  * Options to customize input, etc
 * The pipeline can be run externally
+ * A few bugs we will fix in the next release
+ * Docker out of the box, Python batch possible
+* File formats and more are in the works
 
 </script></section>
 
